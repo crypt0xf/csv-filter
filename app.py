@@ -16,8 +16,8 @@ def selecionar_arquivo():
     global input_file
 
     input = filedialog.askopenfilename(
-        title="Selecione um arquivo CSV",
-        filetypes=(("Arquivos CSV", "*.csv"), ("Todos os arquivos", "*.*"))
+        title="Selecione um arquivo xlsx",
+        filetypes=(("Arquivos CSV", "*.xlsx"), ("Todos os arquivos", "*.*"))
     )
     
     # se o arquivo for legivel pelo código:
@@ -54,12 +54,12 @@ def executar_filtro():
 
     total, filtrado = filtrar_arquivo(
         input_file,
-        "CSVFiltrado.csv",
+        "Condomínios.xlsx",
         key_words
     )
 
     label_resultado.config(
-        text=f"Filtro realizado com sucesso!\nFiltrados: {filtrado}\nArquivo salvo como CSVFiltrado.csv"
+        text=f"Filtro realizado com sucesso!\nFiltrados: {filtrado}\nArquivo salvo como Condomínios.xlsx"
     )
 
 # GUI
