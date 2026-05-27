@@ -16,8 +16,8 @@ def selecionar_arquivo():
     global input_file
 
     input = filedialog.askopenfilename(
-        title="Selecione um arquivo xlsx",
-        filetypes=(("Arquivos CSV", "*.xlsx"), ("Todos os arquivos", "*.*"))
+        title="Selecione um arquivo csv",
+        filetypes=(("Arquivos CSV", "*.csv"), ("Todos os arquivos", "*.*"))
     )
     
     # se o arquivo for legivel pelo código:
