@@ -3,7 +3,6 @@ from datetime import datetime
 from openpyxl import Workbook
 import json
 
-
 def carregar_municipios(arquivo):
     with open(arquivo, "r", encoding="utf-8") as f:
         dados = json.load(f)
@@ -11,13 +10,22 @@ def carregar_municipios(arquivo):
     municipios = {}
 
     for item in dados:
-        # JSON gerado tem "codigo_siafi", zero-padded com 4 dígitos
         codigo = str(item["codigo_siafi"]).strip().zfill(4)
         municipio = item["municipio"].strip().upper()
         municipios[codigo] = municipio
 
     return municipios
 
+def formatar_cnpj(cnpj):
+    cnpj = ''.join(filter(str.isdigit, cnpj)).zfill(14)
+
+    return (
+        f"{cnpj[:2]}."
+        f"{cnpj[2:5]}."
+        f"{cnpj[5:8]}/"
+        f"{cnpj[8:12]}-"
+        f"{cnpj[12:]}"
+    )
 
 def filtrar_arquivo(input_file, output_file, key_words, municipios_json):
 
@@ -57,7 +65,8 @@ def filtrar_arquivo(input_file, output_file, key_words, municipios_json):
             total += 1
 
             try:
-                cnpj = "".join(x.strip() for x in row[0:3])
+                cnpj_bruto = "".join(x.strip() for x in row[0:3])
+                cnpj = formatar_cnpj(cnpj_bruto)
                 nome = row[4].upper()
 
                 if not any((p in nome) or (p in cnpj) for p in key_words):
