@@ -1,29 +1,28 @@
 import csv
 from datetime import datetime
 from openpyxl import Workbook
+import json
 
 
-# carrega municípios em um dicionário
 def carregar_municipios(arquivo):
+    with open(arquivo, "r", encoding="utf-8") as f:
+        dados = json.load(f)
+
     municipios = {}
 
-    with open(arquivo, "r", encoding="utf-8") as f:
-        reader = csv.reader(f, delimiter=";")
-        next(reader)  # pula cabeçalho
-
-        for codigo, municipio in reader:
-            municipios[codigo.strip()] = municipio.strip()
+    for item in dados:
+        # JSON gerado tem "codigo_siafi", zero-padded com 4 dígitos
+        codigo = str(item["codigo_siafi"]).strip().zfill(4)
+        municipio = item["municipio"].strip().upper()
+        municipios[codigo] = municipio
 
     return municipios
 
 
-# input_file = arquivo que envia informação
-# output_file = arquivo que recebe informação
-# key_words = palavras chaves a serem buscadas
-def filtrar_arquivo(input_file, output_file, key_words):
+def filtrar_arquivo(input_file, output_file, key_words, municipios_json):
 
-    # carrega tabela IBGE -> município
-    municipios = carregar_municipios("municipios.csv")
+    # carrega dicionário SIAFI -> município
+    municipios = carregar_municipios(municipios_json)
 
     workbook = Workbook()
     sheet = workbook.active
@@ -88,12 +87,13 @@ def filtrar_arquivo(input_file, output_file, key_words):
                 cep = row[18]
                 uf = row[19].upper()
 
-                codigo_ibge = row[20].strip()
+                # lê o código SIAFI e normaliza para 4 dígitos
+                codigo_siafi = row[20].strip().zfill(4)
 
-                # converte código em município
+                # converte código SIAFI em nome do município
                 municipio = municipios.get(
-                    codigo_ibge,
-                    f"Código não encontrado ({codigo_ibge})"
+                    codigo_siafi,
+                    f"Código não encontrado ({codigo_siafi})"
                 )
 
                 tel1 = " ".join(

@@ -55,7 +55,8 @@ def executar_filtro():
     total, filtrado = filtrar_arquivo(
         input_file,
         "Condomínios.xlsx",
-        key_words
+        key_words,
+        "municipios_siafi.json"
     )
 
     label_resultado.config(
