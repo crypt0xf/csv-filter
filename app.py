@@ -86,7 +86,7 @@ label_dados = tk.Label(janela)
 label_dados.pack()
 
 # campo de palavras-chave
-label_palavras_chave = tk.Label(janela, text="Insira as palavras chave desejadas para filtrar. Separar por ,")
+label_palavras_chave = tk.Label(janela, text="Insira o CNAE desejado para filtrar. Separador = ','")
 label_palavras_chave.pack(pady=10)
 entrada_palavras = tk.Entry(janela, width=50)
 entrada_palavras.pack(pady=5)

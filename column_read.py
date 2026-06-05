@@ -67,12 +67,13 @@ def filtrar_arquivo(input_file, output_file, key_words, municipios_json):
             try:
                 cnpj_bruto = "".join(x.strip() for x in row[0:3])
                 cnpj = formatar_cnpj(cnpj_bruto)
-                nome = row[4].upper()
+                cnae_principal = row[11]
 
-                if not any((p in nome) or (p in cnpj) for p in key_words):
+                if cnae_principal not in key_words:
                     continue
 
                 matriz = row[3]
+                nome = row[4].upper()
                 situ_cadastral = row[5]
 
                 data_situ_cadatral = datetime.strptime(
@@ -85,7 +86,6 @@ def filtrar_arquivo(input_file, output_file, key_words, municipios_json):
                     row[10], "%Y%m%d"
                 ).strftime("%d/%m/%Y")
 
-                cnae1 = row[11]
                 cnae2 = row[12]
 
                 endereco = " ".join(
@@ -129,7 +129,7 @@ def filtrar_arquivo(input_file, output_file, key_words, municipios_json):
                     data_situ_cadatral,
                     nome_fantasia,
                     data_abertura_formatada,
-                    cnae1,
+                    cnae_principal,
                     cnae2,
                     endereco,
                     bairro,
