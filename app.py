@@ -34,17 +34,6 @@ def selecionar_arquivo():
         except Exception as e:
             label_arquivo.config(text=f"Erro: {e}") 
 
-# função para escolher onde salvar o arquivo de saída
-def selecionar_saida():
-    global output_file
-    output_file = filedialog.asksaveasfilename(
-        title="Salvar resultado como",
-        defaultextension=".xlsx",
-        filetypes=(("Arquivos Excel", "*.xlsx"), ("Todos os arquivos", "*.*"))
-    )
-    if saida:
-        output_file = saida
-        label_saida.config(text=f"Saída:\n{saida}")
 
 def rodar_filtro():
     thread = threading.Thread(target=executar_filtro)
@@ -102,9 +91,6 @@ label_arquivo.pack()
 
 label_dados = tk.Label(janela)
 label_dados.pack()
-
-botao_saida = tk.Button(janela, text="Escolher onde salvar o resultado (.xlsx)", command=selecionar_saida)
-botao_saida.pack(pady=5)
 
 label_saida = tk.Label(janela, text="Saída: será salvo automaticamente na pasta do CSV")
 label_saida.pack()
