@@ -6,6 +6,7 @@ import csv
 import threading
 
 input_file = ""  # global
+output_file = "" # arquivo de saída configurável
 
 def thread_arquivo():
     thread = threading.Thread(target=selecionar_arquivo)
@@ -33,6 +34,18 @@ def selecionar_arquivo():
         except Exception as e:
             label_arquivo.config(text=f"Erro: {e}") 
 
+# função para escolher onde salvar o arquivo de saída
+def selecionar_saida():
+    global output_file
+    output_file = filedialog.asksaveasfilename(
+        title="Salvar resultado como",
+        defaultextension=".xlsx",
+        filetypes=(("Arquivos Excel", "*.xlsx"), ("Todos os arquivos", "*.*"))
+    )
+    if saida:
+        output_file = saida
+        label_saida.config(text=f"Saída:\n{saida}")
+
 def rodar_filtro():
     thread = threading.Thread(target=executar_filtro)
     thread.start()
@@ -43,6 +56,9 @@ def executar_filtro():
         label_resultado.config(text="Selecione um arquivo primeiro!")
         return
 
+    # usa output_file se definido, senão usa nome padrão na mesma pasta do input
+    saida = output_file if output_file else input_file.rsplit("/", 1)[0] + "/resultado_filtrado.xlsx"
+
     label_resultado.config(text="Aguarde, o programa está filtrando seus dados...")
     palavras = entrada_palavras.get()
     
@@ -52,22 +68,24 @@ def executar_filtro():
         if p.strip()
     ]
 
-    total, filtrado = filtrar_arquivo(
-        input_file,
-        "Condomínios.xlsx",
-        key_words,
-        "municipios_siafi.json"
-    )
-
-    label_resultado.config(
-        text=f"Filtro realizado com sucesso!\nFiltrados: {filtrado}\nArquivo salvo como Condomínios.xlsx"
-    )
+    try:  # tratamento de erro melhorado
+        total, filtrado = filtrar_arquivo(
+            input_file,
+            saida,
+            key_words,
+            "municipios_siafi.json"
+        )
+        label_resultado.config(
+            text=f"Filtro realizado com sucesso!\nFiltrados: {filtrado} de {total} linhas\nArquivo salvo em:\n{saida}"
+        )
+    except Exception as e:
+        label_resultado.config(text=f"Erro ao filtrar: {e}")
 
 # GUI
 janela = tk.Tk()
 janela.title("CSV Filter")
 janela.resizable(False, False)
-janela.geometry("500x350")
+janela.geometry("500x420") # altura aumentada para novo botão
 
 titulo_label = tk.Label(
     janela, 
@@ -79,11 +97,17 @@ titulo_label.pack(pady=5)
 botao_abrir = tk.Button(janela, text="Escolher CSV", command=thread_arquivo)
 botao_abrir.pack(pady=5)
 
-label_arquivo = tk.Label(janela, text="Nenhum arquivo")
+label_arquivo = tk.Label(janela, text="Nenhum arquivo de entrada selecionado")
 label_arquivo.pack()
 
 label_dados = tk.Label(janela)
 label_dados.pack()
+
+botao_saida = tk.Button(janela, text="Escolher onde salvar o resultado (.xlsx)", command=selecionar_saida)
+botao_saida.pack(pady=5)
+
+label_saida = tk.Label(janela, text="Saída: será salvo automaticamente na pasta do CSV")
+label_saida.pack()
 
 # campo de palavras-chave
 label_palavras_chave = tk.Label(janela, text="Insira o CNAE desejado para filtrar. Separador = ','")

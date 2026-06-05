@@ -1,3 +1,22 @@
+<<<<<<< HEAD
 # Created by venv; see https://docs.python.org/3/library/venv.html
 *.csv
+=======
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.spec
+
+venv/
+.env/
+env/
+
+.vscode/
+.idea/
+
+>>>>>>> ffd8d4cb28a4a20f1cf41042e9e889e45f0c69fb
 *.xlsx
